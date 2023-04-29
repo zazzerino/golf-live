@@ -1,0 +1,49 @@
+:root {
+  --animation-time: 1.5s;
+
+  --game-width: 600px;
+  --game-height: 600px;
+
+  --card-width: 60px;
+  --card-height: 84px;
+
+  --deck-x: calc(var(--card-width) / -2);
+  --deck-y: 0px;
+
+  --table-x: calc(var(--card-width) / 2);
+  --table-y: 0px;
+
+  --hand-bottom-x: 0px;
+  --hand-bottom-y: calc(var(--game-height) / 2 - var(--card-height));
+
+  --hand-left-x: calc(var(--game-width) / -2 + var(--card-height));
+  --hand-left-y: 0px;
+
+  --hand-top-x: 0px;
+  --hand-top-y: calc(var(--game-height) / -2 + var(--card-height));
+
+  --hand-right-x: calc(var(--game-width) / 2 - var(--card-height));
+  --hand-right-y: 0px;
+
+  --held-card-bottom-x: calc(var(--card-width) * 2.5);
+  --held-card-bottom-y: var(--hand-bottom-y);
+
+  --held-card-left-x: var(--hand-left-x);
+  --held-card-left-y: calc(var(--card-width) * 2.5);
+
+  --held-card-top-x: calc(var(--card-width) * -2.5);
+  --held-card-top-y: var(--hand-top-y);
+
+  --held-card-right-x: var(--hand-right-x);
+  --held-card-right-y: calc(var(--card-width) * -2.5);
+}
+
+#disconnected {
+  display: none !important;
+}
+
+.game-svg {
+  background-color: seagreen;
+  width: var(--game-width);
+  height: var(--game-height);
+}

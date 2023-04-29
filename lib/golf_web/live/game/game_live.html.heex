@@ -1,3 +1,19 @@
 <div class="game-page">
   <h2>Game <%= @game_id %></h2>
+
+  <svg class="game-svg" viewBox={game_viewbox()}>
+    <.deck :if={@game_status} game_status={@game_status} playable={@deck_playable?} />
+
+    <.table_cards
+      first={Enum.at(@table_cards, 0)}
+      second={Enum.at(@table_cards, 1)}
+      playable={@table_playable?}
+    />
+  </svg>
+
+  <div class="game-controls">
+    <button :if={@can_start_game?} phx-click="start_game">
+      Start Game
+    </button>
+  </div>
 </div>

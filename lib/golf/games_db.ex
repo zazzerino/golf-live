@@ -16,7 +16,8 @@ defmodule Golf.GamesDb do
   end
 
   def broadcast_game_started(game_id) do
-    Phoenix.PubSub.broadcast(Golf.PubSub, "game:#{game_id}", :game_started)
+    game = get_game(game_id)
+    Phoenix.PubSub.broadcast(Golf.PubSub, "game:#{game_id}", {:game_started, game})
   end
 
   # db queries
@@ -30,21 +31,18 @@ defmodule Golf.GamesDb do
       select: %Player{p | username: u.username}
   end
 
-  def last_event_query(game_id) do
-    from e in Event,
-      where: [game_id: ^game_id],
-      order_by: [desc: e.inserted_at],
-      limit: 1
-  end
-
   def get_game(game_id) do
     Repo.get(Game, game_id)
-    |> Repo.preload(players: players_query(game_id), events: last_event_query(game_id))
+    |> Repo.preload(players: players_query(game_id))
   end
 
-  def game_exists?(game_id) do
-    from(g in Game, where: [id: ^game_id])
-    |> Repo.exists?()
+  def player_query(game_id, user_id) do
+    from p in Player, where: [game_id: ^game_id, user_id: ^user_id]
+  end
+
+  def get_player(game_id, user_id) do
+    player_query(game_id, user_id)
+    |> Repo.one()
   end
 
   # db updates
@@ -112,3 +110,15 @@ defmodule Golf.GamesDb do
   def handle_game_event(%Game{}, %Player{}, %Event{}) do
   end
 end
+
+# def game_exists?(game_id) do
+#   from(g in Game, where: [id: ^game_id])
+#   |> Repo.exists?()
+# end
+
+# def last_event_query(game_id) do
+#   from e in Event,
+#     where: [game_id: ^game_id],
+#     order_by: [desc: e.inserted_at],
+#     limit: 1
+# end
