@@ -11,6 +11,7 @@ defmodule Golf.Games.Game do
     field :table_cards, {:array, :string}
 
     has_many :players, Golf.Games.Player
+    has_many :events, Golf.Games.Event
 
     timestamps()
   end

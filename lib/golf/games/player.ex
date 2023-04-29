@@ -11,6 +11,8 @@ defmodule Golf.Games.Player do
     field :turn, :integer
     field :host?, :boolean, default: false
 
+    has_many :events, Golf.Games.Event
+
     timestamps()
   end
 
