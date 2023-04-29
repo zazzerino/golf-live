@@ -47,3 +47,46 @@
   width: var(--game-width);
   height: var(--game-height);
 }
+
+.card.highlight {
+  filter: url("#highlight");
+  cursor: pointer;
+}
+
+g.hand.bottom {
+  transform: translate(var(--hand-bottom-x), var(--hand-bottom-y));
+}
+
+g.hand.left {
+  transform: translate(var(--hand-left-x), var(--hand-left-y)) 
+             rotate(90deg);
+}
+
+g.hand.top {
+  transform: translate(var(--hand-top-x), var(--hand-top-y)) 
+             rotate(180deg);
+}
+
+g.hand.right {
+  transform: translate(var(--hand-right-x), var(--hand-right-y)) 
+             rotate(270deg);
+}
+
+.card.held.bottom {
+  transform: translate(var(--held-card-bottom-x), var(--held-card-bottom-y));
+}
+
+.card.held.left {
+  transform: translate(var(--held-card-left-x), var(--held-card-left-y))
+             rotate(90deg);
+}
+
+.card.held.top {
+  transform: translate(var(--held-card-top-x), var(--held-card-top-y))
+             rotate(180deg);
+}
+
+.card.held.right {
+  transform: translate(var(--held-card-right-x), var(--held-card-right-y))
+             rotate(270deg);
+}

@@ -190,4 +190,13 @@ defmodule Golf.Games do
     |> Enum.map(&maybe_rank_value/1)
     |> rank_totals(0)
   end
+
+  def hand_positions(num_players) do
+    case num_players do
+      1 -> [:bottom]
+      2 -> [:bottom, :top]
+      3 -> [:bottom, :left, :right]
+      4 -> [:bottom, :left, :top, :right]
+    end
+  end
 end

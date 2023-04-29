@@ -2,13 +2,29 @@
   <h2>Game <%= @game_id %></h2>
 
   <svg class="game-svg" viewBox={game_viewbox()}>
+    <defs>
+      <filter id="highlight">
+        <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="cyan" />
+      </filter>
+    </defs>
+
     <.deck :if={@game_status} game_status={@game_status} playable={@deck_playable?} />
 
     <.table_cards
-      first={Enum.at(@table_cards, 0)}
-      second={Enum.at(@table_cards, 1)}
+      first={@table_card_0}
+      second={@table_card_1}
       playable={@table_playable?}
     />
+
+    <%= for p <- @players do %>
+      <.hand
+        cards={p.hand}
+        position={p.position}
+        player_id={p.id}
+        user_player_id={@player && @player.id}
+        playable_cards={@playable_cards}
+      />
+    <% end %>
   </svg>
 
   <div class="game-controls">

@@ -16,10 +16,13 @@ defmodule GolfWeb.GameLive do
        user_id: session["user_id"],
        game_id: game_id,
        game_status: nil,
-       table_cards: [],
+       table_card_0: nil,
+       table_card_1: nil,
        player: nil,
+       players: [],
        deck_playable?: nil,
        table_playable?: nil,
+       playable_cards: [],
        can_start_game?: nil
      )}
   end
@@ -74,14 +77,46 @@ defmodule GolfWeb.GameLive do
         []
       end
 
+    player_index = player && Enum.find_index(game.players, &(&1.id == player.id))
+    positions = Games.hand_positions(length(game.players))
+
+    players =
+      game.players
+      |> maybe_rotate(player_index)
+      |> assign_positions_and_scores(positions)
+
     assign(socket,
       game: game,
       game_status: game.status,
-      table_cards: game.table_cards,
+      table_card_0: Enum.at(game.table_cards, 0),
+      table_card_1: Enum.at(game.table_cards, 1),
       player: player,
+      players: players,
       can_start_game?: can_start_game?,
       deck_playable?: :deck in playable_cards,
-      table_playable?: :table in playable_cards
+      table_playable?: :table in playable_cards,
+      playable_cards: playable_cards
     )
+  end
+
+  defp assign_positions_and_scores(players, positions) do
+    Enum.zip_with(players, positions, fn player, position ->
+      player
+      |> Map.put(:position, position)
+      |> Map.put(:score, Games.score(player.hand))
+    end)
+  end
+
+  defp maybe_rotate(players, nil), do: players
+  defp maybe_rotate(players, index), do: rotate(players, index)
+
+  defp rotate(list, 0), do: list
+
+  defp rotate(list, n) do
+    list
+    |> Stream.cycle()
+    |> Stream.drop(n)
+    |> Stream.take(length(list))
+    |> Enum.to_list()
   end
 end

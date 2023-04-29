@@ -153,66 +153,57 @@ defmodule GolfWeb.GameComponents do
     """
   end
 
-  # def hand_card_x(index) do
-  #   case index do
-  #     i when i in [0, 3] -> -@card_width
-  #     i when i in [1, 4] -> 0
-  #     i when i in [2, 5] -> @card_width
-  #   end
-  # end
+  def hand_card_x(index) do
+    case index do
+      i when i in [0, 3] -> -@card_width
+      i when i in [1, 4] -> 0
+      i when i in [2, 5] -> @card_width
+    end
+  end
 
-  # def hand_card_y(index) do
-  #   case index do
-  #     i when i in 0..2 -> -@card_height / 2
-  #     _ -> @card_height / 2
-  #   end
-  # end
+  def hand_card_y(index) do
+    case index do
+      i when i in 0..2 -> -@card_height / 2
+      _ -> @card_height / 2
+    end
+  end
 
-  # def hand_positions(num_players) do
-  #   case num_players do
-  #     1 -> [:bottom]
-  #     2 -> [:bottom, :top]
-  #     3 -> [:bottom, :left, :right]
-  #     4 -> [:bottom, :left, :top, :right]
-  #   end
-  # end
+  def hand_index_playable?(playable_cards, index) do
+    card = String.to_existing_atom("hand_#{index}")
+    card in playable_cards
+  end
 
-  # def hand_index_playable?(playable_cards, index) do
-  #   card = String.to_existing_atom("hand_#{index}")
-  #   card in playable_cards
-  # end
+  def hand_card_class(player_id, user_player_id, playable_cards, index) do
+    if player_id == user_player_id and hand_index_playable?(playable_cards, index) do
+      "highlight"
+    end
+  end
 
-  # def hand_card_class(player_id, user_player_id, playable_cards, index) do
-  #   if player_id == user_player_id and hand_index_playable?(playable_cards, index) do
-  #     "highlight"
-  #   end
-  # end
+  attr :cards, :list, required: true
+  attr :position, :atom, required: true
+  attr :player_id, :integer, required: true
+  attr :user_player_id, :integer, required: true
+  attr :playable_cards, :list, required: true
 
-  # attr :cards, :list, required: true
-  # attr :position, :atom, required: true
-  # attr :player_id, :integer, required: true
-  # attr :user_player_id, :integer, required: true
-  # attr :playable_cards, :list, required: true
-
-  # def hand(assigns) do
-  #   ~H"""
-  #   <g class={"hand #{@position}"}>
-  #     <%= for {card, index} <- Enum.with_index(@cards) do %>
-  #       <.card_image
-  #         class={hand_card_class(@player_id, @user_player_id, @playable_cards, index)}
-  #         name={if card["face_up?"], do: card["name"], else: card_back()}
-  #         x={hand_card_x(index)}
-  #         y={hand_card_y(index)}
-  #         phx-value-index={index}
-  #         phx-value-player-id={@player_id}
-  #         phx-value-user-player-id={@user_player_id}
-  #         phx-value-face-up={card["face_up?"]}
-  #         phx-click="hand_click"
-  #       />
-  #     <% end %>
-  #   </g>
-  #   """
-  # end
+  def hand(assigns) do
+    ~H"""
+    <g class={"hand #{@position}"}>
+      <%= for {card, index} <- Enum.with_index(@cards) do %>
+        <.card_image
+          class={hand_card_class(@player_id, @user_player_id, @playable_cards, index)}
+          name={if card["face_up?"], do: card["name"], else: card_back()}
+          x={hand_card_x(index)}
+          y={hand_card_y(index)}
+          phx-value-index={index}
+          phx-value-player-id={@player_id}
+          phx-value-user-player-id={@user_player_id}
+          phx-value-face-up={card["face_up?"]}
+          phx-click="hand_click"
+        />
+      <% end %>
+    </g>
+    """
+  end
 
   # def held_card_class(position, event, playable?) when is_struct(event) do
   #   case {event.action, playable?} do
