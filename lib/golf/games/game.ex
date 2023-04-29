@@ -10,6 +10,8 @@ defmodule Golf.Games.Game do
     field :deck, {:array, :string}
     field :table_cards, {:array, :string}
 
+    has_many :players, Golf.Games.Player
+
     timestamps()
   end
 
