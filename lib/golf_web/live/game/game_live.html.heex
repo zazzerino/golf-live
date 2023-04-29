@@ -31,7 +31,27 @@
         position={p.position}
         playable={@held_playable?}
       />
+
+      <.player_info
+        name={p.username}
+        position={p.position}
+        score={p.score}
+      />
     <% end %>
+
+    <g :if={@game_status == :init} class="game-text">
+      <rect x="-200" y="-50" width="400" height="100" />
+      <text>
+        Waiting for host to start game...
+      </text>
+    </g>
+
+    <g :if={@game_status == :over} class="game-text">
+      <rect x="-100" y="-50" width="200" height="100" />
+      <text>
+        Game Over
+      </text>
+    </g>
   </svg>
 
   <div class="game-controls">

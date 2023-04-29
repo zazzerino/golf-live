@@ -170,12 +170,9 @@ defmodule GolfWeb.GameLive do
     end)
   end
 
-  defp maybe_rotate(players, nil), do: players
-  defp maybe_rotate(players, index), do: rotate(players, index)
-
-  defp rotate(list, 0), do: list
-
-  defp rotate(list, n) do
+  defp maybe_rotate(list, nil), do: list
+  defp maybe_rotate(list, 0), do: list
+  defp maybe_rotate(list, n) do
     list
     |> Stream.cycle()
     |> Stream.drop(n)

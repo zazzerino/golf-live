@@ -253,9 +253,14 @@ defmodule GolfWeb.GameComponents do
     """
   end
 
-  # attr :name, :string, required: true
-  # attr :score, :integer, required: true
-  # attr :position, :atom, required: true
+  attr :name, :string, required: true
+  attr :score, :integer, required: true
+  attr :position, :atom, required: true
+
+  def player_info(assigns) do
+    ~H"""
+    """
+  end
 
   # def player_info(assigns) do
   #   ~H"""

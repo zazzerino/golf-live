@@ -48,6 +48,19 @@
   height: var(--game-height);
 }
 
+.game-text rect {
+  fill: cyan;
+}
+
+.game-text text {
+  text-anchor: middle;
+  dominant-baseline: middle;
+  background-color: aqua;
+  fill: fuchsia;
+  font-size: larger;
+  font-weight: bold;
+}
+
 .card.highlight {
   filter: url("#highlight");
   cursor: pointer;
