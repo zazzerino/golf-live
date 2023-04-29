@@ -8,7 +8,7 @@ defmodule Golf.Games.Game do
     field :status, Ecto.Enum, values: @statuses
     field :turn, :integer
     field :deck, {:array, :string}
-    field :table_cards, {:array, :string}
+    field :table_cards, {:array, :string}, default: []
 
     has_many :players, Golf.Games.Player
     has_many :events, Golf.Games.Event

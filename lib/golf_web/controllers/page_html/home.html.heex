@@ -1,7 +1,7 @@
-<!--<link phx-track-static rel="stylesheet" href={~p"/assets/home.css"} /> -->
-
-<.flash_group flash={@flash} />
-
 <h2>Golf</h2>
 
-<p>Hello user <%= @user.id %>:<%= @user.username %> </p>
+<p>Hello user <%= @user.id %>:<%= @user.username %></p>
+
+<.form for={%{}} action={~p"/games/create"}>
+  <button>Create Game</button>
+</.form>

@@ -6,8 +6,13 @@ defmodule Golf.Games do
                   do: rank <> suit
 
   @decks_to_use 2
+  def decks_to_use, do: @decks_to_use
+
   @max_players 4
+  def max_players, do: @max_players
+
   @hand_size 6
+  def hand_size, do: @hand_size
 
   # game logic
 
@@ -181,7 +186,8 @@ defmodule Golf.Games do
   defp maybe_rank_value(_), do: nil
 
   def score(hand) do
-    Enum.map(hand, &maybe_rank_value/1)
+    hand
+    |> Enum.map(&maybe_rank_value/1)
     |> rank_totals(0)
   end
 end

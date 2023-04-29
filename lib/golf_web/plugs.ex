@@ -1,7 +1,7 @@
 defmodule GolfWeb.Plugs do
   import Plug.Conn
 
-  def put_user(conn, _) do
+  def put_user_id(conn, _) do
     if get_session(conn, "user_id") do
       conn
     else

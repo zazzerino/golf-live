@@ -11,6 +11,8 @@ defmodule Golf.Games.Player do
     field :turn, :integer
     field :host?, :boolean, default: false
 
+    field :username, :string, virtual: true
+
     has_many :events, Golf.Games.Event
 
     timestamps()
@@ -20,6 +22,6 @@ defmodule Golf.Games.Player do
   def changeset(player, attrs) do
     player
     |> cast(attrs, [:user_id, :game_id, :hand, :held_card, :turn, :host?])
-    |> validate_required([:user_id, :game_id, :hand, :held_card, :turn, :host?])
+    |> validate_required([:user_id, :game_id, :hand, :turn, :host?])
   end
 end
