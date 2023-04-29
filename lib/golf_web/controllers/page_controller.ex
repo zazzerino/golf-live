@@ -2,8 +2,8 @@ defmodule GolfWeb.PageController do
   use GolfWeb, :controller
 
   def home(conn, _params) do
-    # The home page is often custom made,
-    # so skip the default app layout.
-    render(conn, :home, layout: false)
+    user_id = get_session(conn, "user_id")
+    user = Golf.Repo.get(Golf.User, user_id)
+    render(conn, :home, page_title: "Home", user: user)
   end
 end
