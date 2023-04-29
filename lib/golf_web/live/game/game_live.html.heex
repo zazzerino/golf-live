@@ -24,6 +24,13 @@
         user_player_id={@player && @player.id}
         playable_cards={@playable_cards}
       />
+
+      <.held_card
+        :if={p.held_card}
+        name={p.held_card}
+        position={p.position}
+        playable={@held_playable?}
+      />
     <% end %>
   </svg>
 

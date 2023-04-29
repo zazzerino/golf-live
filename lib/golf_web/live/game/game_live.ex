@@ -2,6 +2,7 @@ defmodule GolfWeb.GameLive do
   use GolfWeb, :live_view
   import GolfWeb.GameComponents
   alias Golf.{Games, GamesDb}
+  alias Golf.Games.Event
 
   @impl true
   def mount(%{"game_id" => game_id}, session, socket) do
@@ -20,9 +21,10 @@ defmodule GolfWeb.GameLive do
        table_card_1: nil,
        player: nil,
        players: [],
+       playable_cards: [],
        deck_playable?: nil,
        table_playable?: nil,
-       playable_cards: [],
+       held_playable?: nil,
        can_start_game?: nil
      )}
   end
@@ -47,6 +49,11 @@ defmodule GolfWeb.GameLive do
   end
 
   @impl true
+  def handle_info({:game_event, game}, socket) do
+    {:noreply, assign_game_data(socket, game)}
+  end
+
+  @impl true
   def handle_info(info, socket) do
     IO.inspect(info, label: "INFO")
     {:noreply, socket}
@@ -59,10 +66,65 @@ defmodule GolfWeb.GameLive do
   end
 
   @impl true
-  def handle_event(name, value, socket) do
-    IO.inspect(name, label: "EVENT NAME")
-    IO.inspect(value, label: "EVENT VALUE")
+  def handle_event("hand_click", value, %{assigns: %{player: user_player, game: game}} = socket)
+      when is_struct(user_player) do
+    with player_id <- String.to_integer(value["player-id"]),
+         index <- String.to_integer(value["index"]),
+         card <- String.to_existing_atom("hand_#{index}"),
+         true <- user_player.id == player_id,
+         true <- card in socket.assigns.playable_cards,
+         event <- hand_click_event(game, user_player, index),
+         {:ok, _} <- GamesDb.handle_game_event(game, user_player, event) do
+      {:noreply, socket}
+    else
+      _ ->
+        {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_event("deck_click", %{"playable" => _}, socket) do
+    game = socket.assigns.game
+    player = socket.assigns.player
+    event = Event.take_from_deck(game.id, player.id)
+    {:ok, _} = GamesDb.handle_game_event(game, player, event)
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("table_click", %{"playable" => _}, socket) do
+    game = socket.assigns.game
+    player = socket.assigns.player
+    event = Event.take_from_table(game.id, player.id)
+    {:ok, _} = GamesDb.handle_game_event(game, player, event)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("held_click", %{"playable" => _}, socket) do
+    game = socket.assigns.game
+    player = socket.assigns.player
+    event = Event.discard(game.id, player.id)
+    {:ok, _} = GamesDb.handle_game_event(game, player, event)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event(_, _, socket) do
+    {:noreply, socket}
+  end
+
+  defp hand_click_event(game, player, index) do
+    action =
+      case game.status do
+        s when s in [:flip2, :flip] ->
+          :flip
+
+        :hold ->
+          :swap
+      end
+
+    %Event{game_id: game.id, player_id: player.id, action: action, hand_index: index}
   end
 
   defp assign_game_data(socket, game) do
@@ -93,9 +155,10 @@ defmodule GolfWeb.GameLive do
       player: player,
       players: players,
       can_start_game?: can_start_game?,
+      playable_cards: playable_cards,
       deck_playable?: :deck in playable_cards,
       table_playable?: :table in playable_cards,
-      playable_cards: playable_cards
+      held_playable?: :held in playable_cards
     )
   end
 

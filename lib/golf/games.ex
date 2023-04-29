@@ -77,7 +77,7 @@ defmodule Golf.Games do
     Enum.all?(players, fn p -> num_cards_face_up(p.hand) >= 2 end)
   end
 
-  def all_players_all_flipped?(players) do
+  def all_players_all_face_up?(players) do
     Enum.all?(players, fn p -> all_face_up?(p.hand) end)
   end
 

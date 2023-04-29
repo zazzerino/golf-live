@@ -229,21 +229,29 @@ defmodule GolfWeb.GameComponents do
 
   # def held_card_class(position, _, _), do: "held #{position}"
 
-  # attr :name, :string, required: true
-  # attr :position, :atom, required: true
-  # attr :playable, :boolean, required: true
+  def held_card_class(position, playable?) do
+    if playable? do
+      "held #{position} highlight"
+    else
+      "held #{position}"
+    end
+  end
+
+  attr :name, :string, required: true
+  attr :position, :atom, required: true
+  attr :playable, :boolean, required: true
   # attr :event, :map, required: true
 
-  # def held_card(assigns) do
-  #   ~H"""
-  #   <.card_image
-  #     class={held_card_class(@position, @event, @playable)}
-  #     name={@name}
-  #     phx-value-playable={@playable}
-  #     phx-click="held_click"
-  #   />
-  #   """
-  # end
+  def held_card(assigns) do
+    ~H"""
+    <.card_image
+      class={held_card_class(@position, @playable)}
+      name={@name}
+      phx-value-playable={@playable}
+      phx-click="held_click"
+    />
+    """
+  end
 
   # attr :name, :string, required: true
   # attr :score, :integer, required: true
