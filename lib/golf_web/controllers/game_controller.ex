@@ -3,7 +3,7 @@ defmodule GolfWeb.GameController do
 
   def create_game(conn, _) do
     user_id = get_session(conn, "user_id")
-    user = Golf.User.get(user_id)
+    user = Golf.Users.get_user(user_id)
     {:ok, %{game: game}} = Golf.GamesDb.create_game(user)
     redirect(conn, to: ~p"/games/#{game.id}")
   end

@@ -43,7 +43,7 @@ defmodule GolfWeb.GameLive do
          |> redirect(to: ~p"/")}
 
       game ->
-        join_requests = GamesDb.get_join_requests(game.id)
+        join_requests = GamesDb.get_unconfirmed_join_requests(game.id)
 
         {:noreply,
          socket
@@ -63,17 +63,30 @@ defmodule GolfWeb.GameLive do
   end
 
   @impl true
-  def handle_info({:join_request, game_id}, socket) do
-    user_id = socket.assigns.user_id
+  def handle_info({:join_request, join_request}, socket) do
     player = socket.assigns.player
-    join_requests = GamesDb.get_join_requests(game_id)
-    can_join_game? = !player && !is_struct(Enum.find(join_requests, &(&1.user_id == user_id)))
+    user_id = socket.assigns.user_id
+    game_id = join_request.game_id
+    join_requests = GamesDb.get_unconfirmed_join_requests(game_id)
+    can_join_game? = !player && !Enum.find(join_requests, &(&1.user_id == user_id))
     {:noreply, assign(socket, join_requests: join_requests, can_join_game?: can_join_game?)}
   end
 
   @impl true
+  def handle_info({:player_joined, _}, socket) do
+    game_id = socket.assigns.game_id
+    game = GamesDb.get_game(game_id)
+    join_requests = GamesDb.get_unconfirmed_join_requests(game_id)
+
+    {:noreply,
+     socket
+     |> assign(:join_requests, join_requests)
+     |> assign_game_data(game)}
+  end
+
+  @impl true
   def handle_event("start_game", _, %{assigns: %{can_start_game?: true, game: game}} = socket) do
-    GamesDb.start_game(game)
+    {:ok, _} = GamesDb.start_game(game)
     {:noreply, socket}
   end
 
@@ -83,6 +96,19 @@ defmodule GolfWeb.GameLive do
     user_id = socket.assigns.user_id
     join_request = %JoinRequest{game_id: game_id, user_id: user_id}
     {:ok, _} = GamesDb.make_join_request(join_request)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("confirm_join", %{"request-id" => request_id}, socket) do
+    join_requests = socket.assigns.join_requests
+    game = socket.assigns.game
+
+    with {id, _} when is_integer(id) <- Integer.parse(request_id),
+         request when is_struct(request) <- Enum.find(join_requests, &(&1.id == id)) do
+      {:ok, _} = GamesDb.confirm_join_request(game, request)
+    end
+
     {:noreply, socket}
   end
 
@@ -131,9 +157,7 @@ defmodule GolfWeb.GameLive do
   end
 
   @impl true
-  def handle_event(_, _, socket) do
-    {:noreply, socket}
-  end
+  def handle_event(_, _, socket), do: {:noreply, socket}
 
   defp hand_click_event(game, player, index) do
     action =
@@ -166,7 +190,8 @@ defmodule GolfWeb.GameLive do
       |> assign_positions_and_scores(positions)
 
     can_start_game? = player && player.host? && game.status == :init
-    requested_join? = Enum.find(socket.assigns.join_requests, &(&1.user_id == user_id))
+    join_requests = socket.assigns.join_requests
+    requested_join? = Enum.find(join_requests, &(&1.user_id == user_id))
     can_join_game? = !player && !requested_join? && game.status == :init
 
     assign(socket,

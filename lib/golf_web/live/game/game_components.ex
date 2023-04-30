@@ -269,19 +269,26 @@ defmodule GolfWeb.GameComponents do
   end
 
   attr :join_requests, :list, required: true
+  attr :game_status, :atom, required: true
+  attr :host, :boolean, required: true
 
-  def join_users_table(assigns) do
+  def join_requests_table(assigns) do
     ~H"""
-    <table class="join-users-table">
-      <caption>Users Waiting To Join</caption>
+    <table :if={@game_status == :init} class="join-requests-table">
+      <caption>Join Requests</caption>
       <tr>
-        <th>Id</th>
+        <th>User Id</th>
         <th>Username</th>
       </tr>
       <%= for req <- @join_requests do %>
         <tr>
           <td><%= req.user_id %></td>
           <td><%= req.username %></td>
+          <td :if={@host}>
+            <button phx-value-request-id={req.id} phx-click="confirm_join">
+              Confirm
+            </button>
+          </td>
         </tr>
       <% end %>
     </table>

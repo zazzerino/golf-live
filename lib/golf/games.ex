@@ -69,12 +69,12 @@ defmodule Golf.Games do
     num_cards_face_up(hand) == @hand_size - 1
   end
 
-  def all_face_up?(hand) do
-    num_cards_face_up(hand) == @hand_size
-  end
-
   def all_two_face_up?(players) do
     Enum.all?(players, fn p -> num_cards_face_up(p.hand) >= 2 end)
+  end
+
+  def all_face_up?(hand) do
+    num_cards_face_up(hand) == @hand_size
   end
 
   def all_players_all_face_up?(players) do
@@ -113,9 +113,7 @@ defmodule Golf.Games do
     end
   end
 
-  def playable_cards(%Game{}, %Player{}) do
-    []
-  end
+  def playable_cards(_, _), do: []
 
   def rank_value(rank) when is_integer(rank) do
     case rank do
@@ -182,7 +180,7 @@ defmodule Golf.Games do
     end
   end
 
-  defp maybe_rank_value(%{"name" => <<rank, _>>, "face_up?" => true}), do: rank_value(rank)
+  defp maybe_rank_value(%{"face_up?" => true, "name" => <<rank, _>>}), do: rank_value(rank)
   defp maybe_rank_value(_), do: nil
 
   def score(hand) do

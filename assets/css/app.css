@@ -42,14 +42,16 @@
   display: none !important;
 }
 
-.join-users-table {
+.join-requests-table {
   margin-top: 1rem;
   width: 33%;
   text-align: left;
 }
 
-.join-users-table caption {
+.join-requests-table caption {
   text-align: left;
+  font-weight: bold;
+  font-size: large;
 }
 
 .game-svg {

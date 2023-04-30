@@ -1,12 +1,14 @@
 defmodule GolfWeb.Plugs do
   import Plug.Conn
 
-  def put_user_id(conn, _) do
-    if get_session(conn, "user_id") do
+  def ensure_user(conn, _) do
+    with user_id when not is_nil(user_id) <- get_session(conn, "user_id"),
+         user when not is_nil(user) <- Golf.Users.get_user(user_id) do
       conn
     else
-      {:ok, user} = Golf.Repo.insert(%Golf.User{})
-      put_session(conn, "user_id", user.id)
+      _ ->
+        {:ok, user} = Golf.Users.create_user()
+        put_session(conn, "user_id", user.id)
     end
   end
 end

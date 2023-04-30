@@ -56,5 +56,9 @@
     </button>
   </div>
 
-  <.join_users_table join_requests={@join_requests} />
+  <.join_requests_table
+    join_requests={@join_requests}
+    game_status={@game_status}
+    host={@player && @player.host?}
+  />
 </div>

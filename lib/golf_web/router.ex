@@ -9,7 +9,7 @@ defmodule GolfWeb.Router do
     plug :put_root_layout, {GolfWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :put_user_id
+    plug :ensure_user
   end
 
   pipeline :api do
@@ -20,10 +20,6 @@ defmodule GolfWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-  end
-
-  scope "/", GolfWeb do
-    pipe_through :browser
 
     live "/games/:game_id", GameLive
     post "/games/create", GameController, :create_game
