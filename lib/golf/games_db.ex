@@ -3,7 +3,7 @@ defmodule Golf.GamesDb do
   import Golf.Games
 
   alias Golf.{Repo, User}
-  alias Golf.Games.{Game, Player, Event}
+  alias Golf.Games.{Game, Player, Event, JoinRequest}
 
   # pubsub
 
@@ -23,6 +23,10 @@ defmodule Golf.GamesDb do
   def broadcast_game_event(game_id) do
     game = get_game(game_id)
     Phoenix.PubSub.broadcast(Golf.PubSub, "game:#{game_id}", {:game_event, game})
+  end
+
+  def broadcast_join_request(game_id) do
+    Phoenix.PubSub.broadcast(Golf.PubSub, "game:#{game_id}", {:join_request, game_id})
   end
 
   # db queries
@@ -48,6 +52,21 @@ defmodule Golf.GamesDb do
   def get_player(game_id, user_id) do
     player_query(game_id, user_id)
     |> Repo.one()
+  end
+
+  def join_request_query(game_id) do
+    from(jr in JoinRequest,
+      where: [game_id: ^game_id],
+      join: u in User,
+      on: [id: jr.user_id],
+      order_by: [desc: jr.inserted_at],
+      select: %JoinRequest{jr | username: u.username}
+    )
+  end
+
+  def get_join_requests(game_id) do
+    join_request_query(game_id)
+    |> Repo.all()
   end
 
   # db updates
@@ -76,6 +95,12 @@ defmodule Golf.GamesDb do
 
     broadcast_player_added(game.id, player)
     {:ok, player}
+  end
+
+  def make_join_request(%Golf.Games.JoinRequest{} = join_request) do
+    {:ok, join_request} = Repo.insert(join_request)
+    broadcast_join_request(join_request.game_id)
+    {:ok, join_request}
   end
 
   defp update_player_hands(multi, players, hands) do

@@ -42,6 +42,16 @@
   display: none !important;
 }
 
+.join-users-table {
+  margin-top: 1rem;
+  width: 33%;
+  text-align: left;
+}
+
+.join-users-table caption {
+  text-align: left;
+}
+
 .game-svg {
   background-color: seagreen;
   width: var(--game-width);

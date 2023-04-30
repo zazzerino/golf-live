@@ -268,6 +268,26 @@ defmodule GolfWeb.GameComponents do
     """
   end
 
+  attr :join_requests, :list, required: true
+
+  def join_users_table(assigns) do
+    ~H"""
+    <table class="join-users-table">
+      <caption>Users Waiting To Join</caption>
+      <tr>
+        <th>Id</th>
+        <th>Username</th>
+      </tr>
+      <%= for req <- @join_requests do %>
+        <tr>
+          <td><%= req.user_id %></td>
+          <td><%= req.username %></td>
+        </tr>
+      <% end %>
+    </table>
+    """
+  end
+
   # attr :id, :any, required: true
   # attr :username, :string, required: true
   # attr :content, :string, required: true
