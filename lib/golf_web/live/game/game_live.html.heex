@@ -58,5 +58,9 @@
     <button :if={@can_start_game?} phx-click="start_game">
       Start Game
     </button>
+
+    <button :if={@can_join_game?} phx-click="join_game">
+      Join Game
+    </button>
   </div>
 </div>

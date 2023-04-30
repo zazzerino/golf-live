@@ -259,18 +259,14 @@ defmodule GolfWeb.GameComponents do
 
   def player_info(assigns) do
     ~H"""
+    <g class={"player-info #{@position}"}>
+      <rect x="-50" y="-25" width="100" height="50" />
+      <text>
+        <%= "#{@name}: #{@score}" %>
+      </text>
+    </g>
     """
   end
-
-  # def player_info(assigns) do
-  #   ~H"""
-  #   <g>
-  #     <text class={"player-info #{@position}"}>
-  #       <%= "#{@name}: #{@score}" %>
-  #     </text>
-  #   </g>
-  #   """
-  # end
 
   # attr :id, :any, required: true
   # attr :username, :string, required: true

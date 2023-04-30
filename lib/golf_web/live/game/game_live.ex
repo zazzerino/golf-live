@@ -25,7 +25,8 @@ defmodule GolfWeb.GameLive do
        deck_playable?: nil,
        table_playable?: nil,
        held_playable?: nil,
-       can_start_game?: nil
+       can_start_game?: nil,
+       can_join_game?: nil
      )}
   end
 
@@ -127,10 +128,10 @@ defmodule GolfWeb.GameLive do
     %Event{game_id: game.id, player_id: player.id, action: action, hand_index: index}
   end
 
-  defp assign_game_data(socket, game) do
-    user_id = socket.assigns.user_id
-    player = GamesDb.get_player(game.id, user_id)
-    can_start_game? = player && player.host? && game.status == :init
+  defp assign_game_data(%{assigns: %{user_id: user_id}} = socket, game) do
+    player_index = Enum.find_index(game.players, &(&1.user_id == user_id))
+    player = player_index && Enum.at(game.players, player_index)
+    positions = Games.hand_positions(length(game.players))
 
     playable_cards =
       if player do
@@ -139,13 +140,13 @@ defmodule GolfWeb.GameLive do
         []
       end
 
-    player_index = player && Enum.find_index(game.players, &(&1.id == player.id))
-    positions = Games.hand_positions(length(game.players))
-
     players =
       game.players
       |> maybe_rotate(player_index)
       |> assign_positions_and_scores(positions)
+
+    can_start_game? = player && player.host? && game.status == :init
+    can_join_game? = !player && game.status == :init
 
     assign(socket,
       game: game,
@@ -154,11 +155,12 @@ defmodule GolfWeb.GameLive do
       table_card_1: Enum.at(game.table_cards, 1),
       player: player,
       players: players,
-      can_start_game?: can_start_game?,
       playable_cards: playable_cards,
       deck_playable?: :deck in playable_cards,
       table_playable?: :table in playable_cards,
-      held_playable?: :held in playable_cards
+      held_playable?: :held in playable_cards,
+      can_start_game?: can_start_game?,
+      can_join_game?: can_join_game?
     )
   end
 

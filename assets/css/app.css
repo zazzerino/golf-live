@@ -67,21 +67,21 @@
 }
 
 g.hand.bottom {
-  transform: translate(var(--hand-bottom-x), var(--hand-bottom-y));
+  transform: translate(var(--hand-bottom-x), calc(var(--hand-bottom-y) - 10%));
 }
 
 g.hand.left {
-  transform: translate(var(--hand-left-x), var(--hand-left-y)) 
+  transform: translate(calc(var(--hand-left-x) + 10%), var(--hand-left-y))
              rotate(90deg);
 }
 
 g.hand.top {
-  transform: translate(var(--hand-top-x), var(--hand-top-y)) 
+  transform: translate(var(--hand-top-x), calc(var(--hand-top-y) + 10%)) 
              rotate(180deg);
 }
 
 g.hand.right {
-  transform: translate(var(--hand-right-x), var(--hand-right-y)) 
+  transform: translate(calc(var(--hand-right-x) - 10%), var(--hand-right-y)) 
              rotate(270deg);
 }
 
@@ -101,5 +101,34 @@ g.hand.right {
 
 .card.held.right {
   transform: translate(var(--held-card-right-x), var(--held-card-right-y))
+             rotate(270deg);
+}
+
+.player-info rect {
+  fill: cyan;
+}
+
+.player-info text {
+  fill: fuchsia;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-weight: bold;
+}
+
+.player-info.bottom {
+  transform: translateY(calc(var(--game-height) / 2 - 5%));
+}
+
+.player-info.left {
+  transform: translateX(calc(var(--game-width) / -2 + 5%))
+             rotate(90deg);
+}
+
+.player-info.top {
+  transform: translateY(calc(var(--game-height) / -2 + 5%));
+}
+
+.player-info.right {
+  transform: translateX(calc(var(--game-width) / 2 - 5%))
              rotate(270deg);
 }
