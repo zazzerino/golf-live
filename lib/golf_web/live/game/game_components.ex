@@ -204,40 +204,13 @@ defmodule GolfWeb.GameComponents do
     """
   end
 
-  attr :join_requests, :list, required: true
-  attr :game_status, :atom, required: true
-  attr :host, :boolean, required: true
-
-  def join_requests_table(assigns) do
-    ~H"""
-    <table :if={@game_status == :init} class="join-requests-table">
-      <caption>Join Requests</caption>
-      <tr>
-        <th>User Id</th>
-        <th>Username</th>
-      </tr>
-      <%= for req <- @join_requests do %>
-        <tr>
-          <td><%= req.user_id %></td>
-          <td><%= req.username %></td>
-          <td :if={@host}>
-            <button phx-value-request-id={req.id} phx-click="confirm_join">
-              Confirm
-            </button>
-          </td>
-        </tr>
-      <% end %>
-    </table>
-    """
-  end
-
   attr :id, :any, required: true
   attr :username, :string, required: true
   attr :content, :string, required: true
 
   def chat_message(assigns) do
     ~H"""
-    <div id={@id} class="game-chat-message">
+    <div id={@id}>
       <span class="game-chat-message-username">
         <%= @username %>:
       </span>
@@ -253,8 +226,8 @@ defmodule GolfWeb.GameComponents do
 
   def game_chat(assigns) do
     ~H"""
-    <div id="game-chat">
-      <h4>Game Chat</h4>
+    <div id="game-chat" class="block">
+      <h4 class="title is-5">Game Chat</h4>
       <div id="game-chat-messages" phx-hook="GameChatMessages">
         <.chat_message
           :for={message <- @messages}
@@ -263,72 +236,125 @@ defmodule GolfWeb.GameComponents do
           content={message.content}
         />
       </div>
-      <div id="game-chat-form">
-        <input id="game-chat-input" phx-hook="GameChatInput" placeholder="Type chat message here" required />
-        <input id="game-chat-button" phx-hook="GameChatButton" type="submit" value="Submit" />
+      <div id="game-chat-form" class="form">
+        <input
+          id="game-chat-input"
+          class="input"
+          phx-hook="GameChatInput"
+          placeholder="Type chat message here"
+          required
+        />
+        <input
+          id="game-chat-button"
+          class="button is-primary"
+          phx-hook="GameChatButton"
+          type="submit"
+          value="Submit"
+        />
       </div>
+    </div>
+    """
+  end
+
+  attr :requests, :list, required: true
+  attr :game_status, :atom, required: true
+  attr :host, :boolean, required: true
+
+  def join_requests_table(assigns) do
+    ~H"""
+    <div class="join-requests block">
+      <h4 class="title is-5">Join Requests</h4>
+      <%= if Enum.empty?(@requests) do %>
+        <p>No pending join requests.</p>
+      <% else %>
+        <table :if={@game_status == :init} class="table">
+          <thead>
+            <tr>
+              <th>User Id</th>
+              <th>Username</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= for req <- @requests do %>
+              <tr>
+                <td><%= req.user_id %></td>
+                <td><%= req.username %></td>
+                <td :if={@host}>
+                  <button
+                    class="button is-primary"
+                    phx-value-request-id={req.id}
+                    phx-click="confirm_join"
+                  >
+                    Confirm
+                  </button>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
     </div>
     """
   end
 end
 
-  # def table_card_class(event, playable?) when is_struct(event) do
-  #   case {event.action, playable?} do
-  #     {:discard, true} ->
-  #       "table highlight slide-from-held-#{event.position}"
+# def table_card_class(event, playable?) when is_struct(event) do
+#   case {event.action, playable?} do
+#     {:discard, true} ->
+#       "table highlight slide-from-held-#{event.position}"
 
-  #     {:discard, _} ->
-  #       "table slide-from-held-#{event.position}"
+#     {:discard, _} ->
+#       "table slide-from-held-#{event.position}"
 
-  #     # {:swap, true} ->
-  #     #   "table highlight slide-from-hand-#{event.hand_index}-#{event.position}"
+#     # {:swap, true} ->
+#     #   "table highlight slide-from-hand-#{event.hand_index}-#{event.position}"
 
-  #     # {:swap, _} ->
-  #     #   "table slide-from-hand-#{event.hand_index}-#{event.position}"
+#     # {:swap, _} ->
+#     #   "table slide-from-hand-#{event.hand_index}-#{event.position}"
 
-  #     {_, true} ->
-  #       "table highlight"
+#     {_, true} ->
+#       "table highlight"
 
-  #     _ ->
-  #       "table"
-  #   end
-  # end
+#     _ ->
+#       "table"
+#   end
+# end
 
-  # def table_card_class(_, _), do: "table"
+# def table_card_class(_, _), do: "table"
 
-  # def deck_class(game_status, playable?) do
-  #   case {game_status, playable?} do
-  #     {:init, _} ->
-  #       "deck slide-from-top"
+# def deck_class(game_status, playable?) do
+#   case {game_status, playable?} do
+#     {:init, _} ->
+#       "deck slide-from-top"
 
-  #     {_, true} ->
-  #       "deck highlight"
+#     {_, true} ->
+#       "deck highlight"
 
-  #     _ ->
-  #       "deck"
-  #   end
-  # end
+#     _ ->
+#       "deck"
+#   end
+# end
 
-  # def held_card_class(position, event, playable?) when is_struct(event) do
-  #   case {event.action, playable?} do
-  #     {:take_from_deck, true} ->
-  #       "held #{position} highlight slide-from-deck"
+# def held_card_class(position, event, playable?) when is_struct(event) do
+#   case {event.action, playable?} do
+#     {:take_from_deck, true} ->
+#       "held #{position} highlight slide-from-deck"
 
-  #     {:take_from_deck, _} ->
-  #       "held #{position} slide-from-deck"
+#     {:take_from_deck, _} ->
+#       "held #{position} slide-from-deck"
 
-  #     {:take_from_table, true} ->
-  #       "held #{position} highlight slide-from-table"
+#     {:take_from_table, true} ->
+#       "held #{position} highlight slide-from-table"
 
-  #     {:take_from_table, _} ->
-  #       "held #{position} slide-from-table"
+#     {:take_from_table, _} ->
+#       "held #{position} slide-from-table"
 
-  #     {_, true} ->
-  #       "held #{position} highlight"
+#     {_, true} ->
+#       "held #{position} highlight"
 
-  #     _ ->
-  #       "held #{position}"
-  #   end
-  # end
+#     _ ->
+#       "held #{position}"
+#   end
+# end
 
-  # def held_card_class(position, _, _), do: "held #{position}"
+# def held_card_class(position, _, _), do: "held #{position}"

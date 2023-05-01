@@ -20,7 +20,7 @@ defmodule GolfWeb.PageController do
     {1, [_]} = Users.update_username(user_id, username)
 
     conn
-    |> put_flash(:info, "Username updated")
+    |> put_flash(:info, "Username updated.")
     |> redirect(to: "/settings")
   end
 end

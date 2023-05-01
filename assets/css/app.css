@@ -1,3 +1,5 @@
+@import "bulma.css";
+
 :root {
   --animation-time: 1.5s;
 
@@ -38,46 +40,42 @@
   --held-card-right-y: calc(var(--card-width) * -2.5);
 }
 
-nav ul {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  display: flex;
-}
-
-nav ul li {
-  padding-right: 0.5rem;
-}
-
-nav ul li a {
-  text-decoration: none;
-}
-
 #disconnected {
   display: none !important;
 }
 
-.join-requests-table {
-  margin-top: 1rem;
-  width: 33%;
-  text-align: left;
+#flash {
+  margin-top: -1rem;
+  margin-left: -0.5rem;
+  margin-bottom: 1rem;
+  background-color: antiquewhite;
+  cursor: pointer;
 }
 
-.join-requests-table caption {
-  text-align: left;
-  font-weight: bold;
-  font-size: large;
+.navbar-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.section {
+  padding-top: 2rem;
 }
 
 #game-chat-messages {
   display: flex;
   flex-direction: column-reverse;
-  overflow: scroll;
-  max-height: 130px;
+  overflow-y: scroll;
+  min-height: 4rem;
+  max-height: 12rem;
+  background-color: #FAF9F6;
 }
 
-#game-chat-input {
-  display: block;
+.join-requests {
+  margin-top: 1rem;
+}
+
+.join-requests td {
+  vertical-align: middle;
 }
 
 .game-svg {
@@ -93,14 +91,13 @@ nav ul li a {
 .game-text text {
   text-anchor: middle;
   dominant-baseline: middle;
-  background-color: aqua;
   fill: fuchsia;
   font-size: larger;
   font-weight: bold;
 }
 
 .card.highlight {
-  filter: url("#highlight");
+  filter: url("#card-highlight");
   cursor: pointer;
 }
 
@@ -149,7 +146,7 @@ g.hand.right {
 .player-info text {
   fill: fuchsia;
   text-anchor: middle;
-  dominant-baseline: middle;
+  dominant-baseline: central;
   font-weight: bold;
 }
 
@@ -170,3 +167,63 @@ g.hand.right {
   transform: translateX(calc(var(--game-width) / 2 - 5%))
              rotate(270deg);
 }
+
+/* .join-requests {
+  text-align: center;
+} */
+
+/* nav ul {
+  display: flex;
+}
+
+nav ul li {
+  padding-right: 0.5rem;
+} */
+
+/* nav {
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+}
+
+nav ul li {
+  padding-right: 0.5rem;
+}
+
+nav ul li a {
+  text-decoration: none;
+}
+
+.game-page {
+  margin-left: 1rem;
+}
+
+.join-requests-table {
+  margin-top: 1rem;
+  width: 33%;
+  text-align: left;
+}
+
+.join-requests-table caption {
+  text-align: left;
+  font-weight: bold;
+  font-size: large;
+}
+
+#game-chat {
+  max-width: 600px;
+}
+
+#game-chat-input {
+  display: block;
+}
+
+#game-chat-form {
+  margin-top: 1rem;
+} */

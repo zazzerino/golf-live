@@ -1,7 +1,9 @@
-<h2>Golf</h2>
+<div>
+  <h2 class="block title">Golf</h2>
 
-<p>Hello user <%= @user.id %>:<%= @user.username %></p>
+  <p class="block">Hello user <%= @user.id %>:<%= @user.username %></p>
 
-<.form for={%{}} action={~p"/games/create"}>
-  <button>Create Game</button>
-</.form>
+  <.form class="block" for={%{}} action={~p"/games/create"}>
+    <button class="button is-link">Create Game</button>
+  </.form>
+</div>

@@ -1,13 +1,15 @@
 <header>
-  <nav>
-    <ul>
-      <li><a href={~p"/"}>Home</a></li>
-      <li><a href={~p"/settings"}>Settings</a></li>
-    </ul>
+  <nav class="navbar">
+    <div class="navbar-menu is-active">
+      <div class="navbar-end">
+        <a class="navbar-item" href={~p"/"}>Home</a>
+        <a class="navbar-item" href={~p"/settings"}>Settings</a>
+      </div>
+    </div>
   </nav>
 </header>
 
-<main>
+<main class="section">
   <.flash_group flash={@flash} />
   <%= @inner_content %>
 </main>

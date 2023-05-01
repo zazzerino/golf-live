@@ -34,6 +34,7 @@ Hooks.GameChatMessages = {
 Hooks.GameChatInput = {
   mounted() {
     this.el.addEventListener("keyup", e => {
+      console.log(this);
       if (e.key === "Enter") {
         const input = document.querySelector("#game-chat-input")
         const value = input.value;
