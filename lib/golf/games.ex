@@ -131,62 +131,60 @@ defmodule Golf.Games do
     end
   end
 
-  defp rank_totals(ranks, total) do
+  def rank_value(<<rank, _>>), do: rank_value(rank)
+
+  defp rank_or_nil(%{"face_up?" => true, "name" => <<rank, _>>}), do: rank
+  defp rank_or_nil(_), do: nil
+
+  def score(hand, total \\ 0) do
+    ranks = Enum.map(hand, &rank_or_nil/1)
+
     case ranks do
       # all match
-      [a, a, a, a, a, a] when is_integer(a) ->
+      [a, a, a, a, a, a] when not is_nil(a) ->
         -40
 
       # outer cols match
-      [a, b, a, a, c, a] when is_integer(a) ->
-        rank_totals([b, c], total - 20)
+      [a, b, a, a, c, a] when not is_nil(a) ->
+        score([b, c], total - 20)
 
       # left 2 cols match
-      [a, a, b, a, a, c] when is_integer(a) ->
-        rank_totals([b, c], total - 10)
+      [a, a, b, a, a, c] when not is_nil(a) ->
+        score([b, c], total - 10)
 
       # right 2 cols match
-      [a, b, b, c, b, b] when is_integer(b) ->
-        rank_totals([a, c], total - 10)
+      [a, b, b, c, b, b] when not is_nil(b) ->
+        score([a, c], total - 10)
 
       # left col match
-      [a, b, c, a, d, e] when is_integer(a) ->
-        rank_totals([b, c, d, e], total)
+      [a, b, c, a, d, e] when not is_nil(a) ->
+        score([b, c, d, e], total)
 
       # middle col match
-      [a, b, c, d, b, e] when is_integer(b) ->
-        rank_totals([a, c, d, e], total)
+      [a, b, c, d, b, e] when not is_nil(b) ->
+        score([a, c, d, e], total)
 
       # right col match
-      [a, b, c, d, e, c] when is_integer(c) ->
-        rank_totals([a, b, d, e], total)
+      [a, b, c, d, e, c] when not is_nil(c) ->
+        score([a, b, d, e], total)
 
       # left col match, 2nd pass
-      [a, b, a, c] when is_integer(a) ->
-        rank_totals([b, c], total)
+      [a, b, a, c] when not is_nil(a) ->
+        score([b, c], total)
 
       # right col match, 2nd pass
-      [a, b, c, b] when is_integer(b) ->
-        rank_totals([a, c], total)
+      [a, b, c, b] when not is_nil(b) ->
+        score([a, c], total)
 
-      [a, a] when is_integer(a) ->
+      [a, a] when not is_nil(a) ->
         total
 
       _ ->
         ranks
         |> Enum.reject(&is_nil/1)
-        |> Enum.sum()
+        |> Enum.reduce(0, fn name, acc -> rank_value(name) + acc end)
         |> Kernel.+(total)
     end
-  end
-
-  defp maybe_rank_value(%{"face_up?" => true, "name" => <<rank, _>>}), do: rank_value(rank)
-  defp maybe_rank_value(_), do: nil
-
-  def score(hand) do
-    hand
-    |> Enum.map(&maybe_rank_value/1)
-    |> rank_totals(0)
   end
 
   def hand_positions(num_players) do
