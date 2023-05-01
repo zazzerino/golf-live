@@ -3,8 +3,10 @@
 :root {
   --animation-time: 1.5s;
 
-  --game-width: 600px;
-  --game-height: 600px;
+  /* --game-width: 600px; */
+  /* --game-height: 600px; */
+  --game-width: 100%;
+  --game-height: 100%;
 
   --card-width: 60px;
   --card-height: 84px;
