@@ -1,8 +1,8 @@
 defmodule Golf.UserFixture do
-  alias Golf.{Repo, User}
+  alias Golf.Users
 
-  def user_fixture(_attrs \\ %{}) do
-    {:ok, user} = Repo.insert(%User{})
+  def user_fixture() do
+    {:ok, user} = Users.create_user()
     user
   end
 end

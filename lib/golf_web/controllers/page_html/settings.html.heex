@@ -1,0 +1,9 @@
+<h2>Settings</h2>
+
+<.form class="update-username-form" for={%{}} action={~p"/update_username"}>
+  <div>
+    <label for="username">Username</label>
+    <input name="username" value={@user.username} required />
+  </div>
+  <input type="submit" value="Update" />
+</.form>

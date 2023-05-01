@@ -1,6 +1,13 @@
+<header>
+  <nav>
+    <ul>
+      <li><a href={~p"/"}>Home</a></li>
+      <li><a href={~p"/settings"}>Settings</a></li>
+    </ul>
+  </nav>
+</header>
+
 <main>
-  <div>
-    <.flash_group flash={@flash} />
-    <%= @inner_content %>
-  </div>
+  <.flash_group flash={@flash} />
+  <%= @inner_content %>
 </main>

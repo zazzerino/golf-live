@@ -38,6 +38,21 @@
   --held-card-right-y: calc(var(--card-width) * -2.5);
 }
 
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+}
+
+nav ul li {
+  padding-right: 0.5rem;
+}
+
+nav ul li a {
+  text-decoration: none;
+}
+
 #disconnected {
   display: none !important;
 }
