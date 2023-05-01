@@ -69,6 +69,17 @@ nav ul li a {
   font-size: large;
 }
 
+#game-chat-messages {
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: scroll;
+  max-height: 130px;
+}
+
+#game-chat-input {
+  display: block;
+}
+
 .game-svg {
   background-color: seagreen;
   width: var(--game-width);

@@ -23,8 +23,40 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 import "../css/app.css"
 
+let Hooks = {};
+
+Hooks.GameChatMessages = {
+  updated() {
+    this.el.scrollTo(0, this.el.scrollHeight);
+  }
+}
+
+Hooks.GameChatInput = {
+  mounted() {
+    this.el.addEventListener("keyup", e => {
+      if (e.key === "Enter") {
+        const input = document.querySelector("#game-chat-input")
+        const value = input.value;
+        this.pushEvent("game_chat_submit", {value});
+        input.value = "";
+      }
+    });
+  }
+}
+
+Hooks.GameChatButton = {
+  mounted() {
+    this.el.addEventListener("click", e => {
+      const input = document.querySelector("#game-chat-input")
+      const value = input.value;
+      this.pushEvent("game_chat_submit", {value});
+      input.value = "";
+    });
+  }
+}
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: Hooks})
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})

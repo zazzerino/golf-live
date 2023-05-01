@@ -2,7 +2,7 @@ defmodule GolfWeb.GameLive do
   use GolfWeb, :live_view
   import GolfWeb.GameComponents
   alias Golf.{Games, GamesDb}
-  alias Golf.Games.{Event, JoinRequest}
+  alias Golf.Games.{Event, JoinRequest, ChatMessage}
 
   @impl true
   def mount(%{"game_id" => game_id}, session, socket) do
@@ -29,7 +29,8 @@ defmodule GolfWeb.GameLive do
        held_playable?: nil,
        can_start_game?: nil,
        can_join_game?: nil,
-       join_requests: []
+       join_requests: [],
+       chat_messages: []
      )}
   end
 
@@ -43,11 +44,8 @@ defmodule GolfWeb.GameLive do
          |> redirect(to: ~p"/")}
 
       game ->
-        join_requests = GamesDb.get_unconfirmed_join_requests(game.id)
-
         {:noreply,
          socket
-         |> assign(:join_requests, join_requests)
          |> assign_game_data(game)}
     end
   end
@@ -76,12 +74,13 @@ defmodule GolfWeb.GameLive do
   def handle_info({:player_joined, _}, socket) do
     game_id = socket.assigns.game_id
     game = GamesDb.get_game(game_id)
-    join_requests = GamesDb.get_unconfirmed_join_requests(game_id)
+    {:noreply, assign_game_data(socket, game)}
+  end
 
-    {:noreply,
-     socket
-     |> assign(:join_requests, join_requests)
-     |> assign_game_data(game)}
+  @impl true
+  def handle_info({:chat_message, message}, socket) do
+    messages = [message | socket.assigns.chat_messages]
+    {:noreply, assign(socket, chat_messages: messages)}
   end
 
   @impl true
@@ -109,6 +108,23 @@ defmodule GolfWeb.GameLive do
       {:ok, _} = GamesDb.confirm_join_request(game, request)
     end
 
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("game_chat_submit", %{"value" => ""}, socket) do
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("game_chat_submit", %{"value" => content}, socket) do
+    message = %ChatMessage{
+      game_id: socket.assigns.game_id,
+      user_id: socket.assigns.user_id,
+      content: content
+    }
+
+    {:ok, _} = GamesDb.insert_chat_message(message)
     {:noreply, socket}
   end
 
@@ -187,11 +203,10 @@ defmodule GolfWeb.GameLive do
     players =
       game.players
       |> maybe_rotate(player_index)
-      |> assign_positions_and_scores(positions)
+      |> put_positions_and_scores(positions)
 
     can_start_game? = player && player.host? && game.status == :init
-    join_requests = socket.assigns.join_requests
-    requested_join? = Enum.find(join_requests, &(&1.user_id == user_id))
+    requested_join? = Enum.find(game.join_requests, &(&1.user_id == user_id))
     can_join_game? = !player && !requested_join? && game.status == :init
 
     assign(socket,
@@ -206,11 +221,13 @@ defmodule GolfWeb.GameLive do
       table_playable?: :table in playable_cards,
       held_playable?: :held in playable_cards,
       can_start_game?: can_start_game?,
-      can_join_game?: can_join_game?
+      can_join_game?: can_join_game?,
+      join_requests: game.join_requests,
+      chat_messages: game.chat_messages
     )
   end
 
-  defp assign_positions_and_scores(players, positions) do
+  defp put_positions_and_scores(players, positions) do
     Enum.zip_with(players, positions, fn player, position ->
       player
       |> Map.put(:position, position)

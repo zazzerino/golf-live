@@ -12,6 +12,8 @@ defmodule Golf.Games.Game do
 
     has_many :players, Golf.Games.Player
     has_many :events, Golf.Games.Event
+    has_many :join_requests, Golf.Games.JoinRequest
+    has_many :chat_messages, Golf.Games.ChatMessage
 
     timestamps()
   end

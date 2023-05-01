@@ -44,19 +44,6 @@ defmodule GolfWeb.GameComponents do
   def deck_x(:init), do: 0
   def deck_x(_), do: -@card_width / 2
 
-  # def deck_class(game_status, playable?) do
-  #   case {game_status, playable?} do
-  #     {:init, _} ->
-  #       "deck slide-from-top"
-
-  #     {_, true} ->
-  #       "deck highlight"
-
-  #     _ ->
-  #       "deck"
-  #   end
-  # end
-
   def deck_class(playable?) do
     if playable? do
       "deck highlight"
@@ -82,30 +69,6 @@ defmodule GolfWeb.GameComponents do
 
   def table_card_x, do: @card_width / 2
 
-  # def table_card_class(event, playable?) when is_struct(event) do
-  #   case {event.action, playable?} do
-  #     {:discard, true} ->
-  #       "table highlight slide-from-held-#{event.position}"
-
-  #     {:discard, _} ->
-  #       "table slide-from-held-#{event.position}"
-
-  #     # {:swap, true} ->
-  #     #   "table highlight slide-from-hand-#{event.hand_index}-#{event.position}"
-
-  #     # {:swap, _} ->
-  #     #   "table slide-from-hand-#{event.hand_index}-#{event.position}"
-
-  #     {_, true} ->
-  #       "table highlight"
-
-  #     _ ->
-  #       "table"
-  #   end
-  # end
-
-  # def table_card_class(_, _), do: "table"
-
   def table_card_class(playable?) do
     if playable? do
       "table highlight"
@@ -116,7 +79,6 @@ defmodule GolfWeb.GameComponents do
 
   attr :name, :string, required: true
   attr :playable, :boolean, required: true
-  # attr :event, :map, required: true
 
   def table_card_0(assigns) do
     ~H"""
@@ -142,7 +104,6 @@ defmodule GolfWeb.GameComponents do
   attr :first, :string, required: true
   attr :second, :string, required: true
   attr :playable, :boolean, required: true
-  # attr :event, :map, required: true
 
   def table_cards(assigns) do
     ~H"""
@@ -205,30 +166,6 @@ defmodule GolfWeb.GameComponents do
     """
   end
 
-  # def held_card_class(position, event, playable?) when is_struct(event) do
-  #   case {event.action, playable?} do
-  #     {:take_from_deck, true} ->
-  #       "held #{position} highlight slide-from-deck"
-
-  #     {:take_from_deck, _} ->
-  #       "held #{position} slide-from-deck"
-
-  #     {:take_from_table, true} ->
-  #       "held #{position} highlight slide-from-table"
-
-  #     {:take_from_table, _} ->
-  #       "held #{position} slide-from-table"
-
-  #     {_, true} ->
-  #       "held #{position} highlight"
-
-  #     _ ->
-  #       "held #{position}"
-  #   end
-  # end
-
-  # def held_card_class(position, _, _), do: "held #{position}"
-
   def held_card_class(position, playable?) do
     if playable? do
       "held #{position} highlight"
@@ -240,7 +177,6 @@ defmodule GolfWeb.GameComponents do
   attr :name, :string, required: true
   attr :position, :atom, required: true
   attr :playable, :boolean, required: true
-  # attr :event, :map, required: true
 
   def held_card(assigns) do
     ~H"""
@@ -260,7 +196,7 @@ defmodule GolfWeb.GameComponents do
   def player_info(assigns) do
     ~H"""
     <g class={"player-info #{@position}"}>
-      <rect x="-50" y="-25" width="100" height="50" />
+      <rect x="-90" y="-25" width="180" height="50" />
       <text>
         <%= "#{@name}: #{@score}" %>
       </text>
@@ -295,47 +231,104 @@ defmodule GolfWeb.GameComponents do
     """
   end
 
-  # attr :id, :any, required: true
-  # attr :username, :string, required: true
-  # attr :content, :string, required: true
+  attr :id, :any, required: true
+  attr :username, :string, required: true
+  attr :content, :string, required: true
 
-  # def chat_message(assigns) do
-  #   ~H"""
-  #   <div id={@id} class="game-chat-message">
-  #     <span class="game-chat-message-username">
-  #       <%= @username %>:
-  #     </span>
+  def chat_message(assigns) do
+    ~H"""
+    <div id={@id} class="game-chat-message">
+      <span class="game-chat-message-username">
+        <%= @username %>:
+      </span>
 
-  #     <span class="game-chat-message-content">
-  #       <%= @content %>
-  #     </span>
-  #   </div>
-  #   """
-  # end
+      <span class="game-chat-message-content">
+        <%= @content %>
+      </span>
+    </div>
+    """
+  end
 
-  # attr :messages, :list, required: true
-  # attr :form, :any, required: true
+  attr :messages, :list, required: true
 
-  # def game_chat(assigns) do
-  #   ~H"""
-  #   <div id="game-chat">
-  #     <div id="game-chat-messages" phx-update="append" phx-hook="ChatMessages">
-  #       <.chat_message
-  #         :for={message <- @messages}
-  #         id={"message-#{message.id}"}
-  #         username={message.username}
-  #         content={message.content}
-  #       />
-  #     </div>
-
-  #     <.simple_form for={@form} phx-change="validate_chat_message" phx-submit="send_chat_message">
-  #       <.input field={@form[:content]} placeholder="Enter chat message" />
-
-  #       <:actions>
-  #         <.button>Send Message</.button>
-  #       </:actions>
-  #     </.simple_form>
-  #   </div>
-  #   """
-  # end
+  def game_chat(assigns) do
+    ~H"""
+    <div id="game-chat">
+      <h4>Game Chat</h4>
+      <div id="game-chat-messages" phx-hook="GameChatMessages">
+        <.chat_message
+          :for={message <- @messages}
+          id={"message-#{message.id}"}
+          username={message.username}
+          content={message.content}
+        />
+      </div>
+      <div id="game-chat-form">
+        <input id="game-chat-input" phx-hook="GameChatInput" placeholder="Type chat message here" required />
+        <input id="game-chat-button" phx-hook="GameChatButton" type="submit" value="Submit" />
+      </div>
+    </div>
+    """
+  end
 end
+
+  # def table_card_class(event, playable?) when is_struct(event) do
+  #   case {event.action, playable?} do
+  #     {:discard, true} ->
+  #       "table highlight slide-from-held-#{event.position}"
+
+  #     {:discard, _} ->
+  #       "table slide-from-held-#{event.position}"
+
+  #     # {:swap, true} ->
+  #     #   "table highlight slide-from-hand-#{event.hand_index}-#{event.position}"
+
+  #     # {:swap, _} ->
+  #     #   "table slide-from-hand-#{event.hand_index}-#{event.position}"
+
+  #     {_, true} ->
+  #       "table highlight"
+
+  #     _ ->
+  #       "table"
+  #   end
+  # end
+
+  # def table_card_class(_, _), do: "table"
+
+  # def deck_class(game_status, playable?) do
+  #   case {game_status, playable?} do
+  #     {:init, _} ->
+  #       "deck slide-from-top"
+
+  #     {_, true} ->
+  #       "deck highlight"
+
+  #     _ ->
+  #       "deck"
+  #   end
+  # end
+
+  # def held_card_class(position, event, playable?) when is_struct(event) do
+  #   case {event.action, playable?} do
+  #     {:take_from_deck, true} ->
+  #       "held #{position} highlight slide-from-deck"
+
+  #     {:take_from_deck, _} ->
+  #       "held #{position} slide-from-deck"
+
+  #     {:take_from_table, true} ->
+  #       "held #{position} highlight slide-from-table"
+
+  #     {:take_from_table, _} ->
+  #       "held #{position} slide-from-table"
+
+  #     {_, true} ->
+  #       "held #{position} highlight"
+
+  #     _ ->
+  #       "held #{position}"
+  #   end
+  # end
+
+  # def held_card_class(position, _, _), do: "held #{position}"

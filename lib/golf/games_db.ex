@@ -4,7 +4,7 @@ defmodule Golf.GamesDb do
 
   alias Golf.Repo
   alias Golf.Users.User
-  alias Golf.Games.{Game, Player, Event, JoinRequest}
+  alias Golf.Games.{Game, Player, Event, JoinRequest, ChatMessage}
 
   # pubsub
 
@@ -34,6 +34,11 @@ defmodule Golf.GamesDb do
     )
   end
 
+  def broadcast_chat_message(message_id) do
+    message = get_chat_message(message_id)
+    Phoenix.PubSub.broadcast(Golf.PubSub, "game:#{message.game_id}", {:chat_message, message})
+  end
+
   # db queries
 
   def players_query(game_id) do
@@ -43,11 +48,6 @@ defmodule Golf.GamesDb do
       join: u in User,
       on: [id: p.user_id],
       select: %Player{p | username: u.username}
-  end
-
-  def get_game(game_id) do
-    Repo.get(Game, game_id)
-    |> Repo.preload(players: players_query(game_id))
   end
 
   def player_query(game_id, user_id) do
@@ -72,6 +72,35 @@ defmodule Golf.GamesDb do
   def get_unconfirmed_join_requests(game_id) do
     unconfirmed_join_requests_query(game_id)
     |> Repo.all()
+  end
+
+  def chat_messages_query(game_id) do
+    from(cm in ChatMessage,
+      where: [game_id: ^game_id],
+      join: u in User,
+      on: [id: cm.user_id],
+      order_by: [desc: cm.inserted_at],
+      select: %ChatMessage{cm | username: u.username}
+    )
+  end
+
+  def get_game(game_id) do
+    Repo.get(Game, game_id)
+    |> Repo.preload(
+      players: players_query(game_id),
+      join_requests: unconfirmed_join_requests_query(game_id),
+      chat_messages: chat_messages_query(game_id)
+    )
+  end
+
+  def get_chat_message(message_id) do
+    from(cm in ChatMessage,
+      where: [id: ^message_id],
+      join: u in User,
+      on: [id: cm.user_id],
+      select: %ChatMessage{cm | username: u.username}
+    )
+    |> Repo.one()
   end
 
   # db updates
@@ -111,6 +140,12 @@ defmodule Golf.GamesDb do
 
     broadcast_player_joined(game.id, player)
     {:ok, multi}
+  end
+
+  def insert_chat_message(%ChatMessage{} = message) do
+    {:ok, message} = Repo.insert(message)
+    broadcast_chat_message(message.id)
+    {:ok, message}
   end
 
   defp update_player_hands(multi, players, hands) do
