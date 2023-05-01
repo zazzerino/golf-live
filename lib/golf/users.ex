@@ -1,4 +1,6 @@
 defmodule Golf.Users do
+  import Ecto.Query, warn: false
+
   alias Golf.Repo
   alias Golf.Users.User
 
@@ -10,9 +12,8 @@ defmodule Golf.Users do
     Repo.insert(%User{})
   end
 
-  def update_username(%User{} = user, new_name) do
-    user
-    |> User.changeset(%{username: new_name})
-    |> Repo.update()
+  def update_username(user_id, username) do
+    from(u in User, where: [id: ^user_id], select: u)
+    |> Repo.update_all(set: [username: username])
   end
 end

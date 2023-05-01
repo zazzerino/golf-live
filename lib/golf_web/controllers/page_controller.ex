@@ -17,8 +17,7 @@ defmodule GolfWeb.PageController do
 
   def update_username(conn, %{"username" => username}) do
     user_id = get_session(conn, "user_id")
-    user = Users.get_user(user_id)
-    {:ok, _} = Users.update_username(user, username)
+    {1, [_]} = Users.update_username(user_id, username)
 
     conn
     |> put_flash(:info, "Username updated")
