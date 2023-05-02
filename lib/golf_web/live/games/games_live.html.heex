@@ -1,0 +1,22 @@
+<h2 class="title block">Games</h2>
+
+<table class="table games-table">
+ <caption class="has-text-weight-bold">Currently Playing</caption>
+ <thead>
+   <tr>
+     <th>Game ID</th>
+     <th>Created At</th>
+     <th>Host?</th>
+   </tr>
+ </thead>
+ <tbody>
+   <%= for g <- @games do %>
+     <tr>
+       <td><%= g.id %></td>
+       <td><%= g.inserted_at %></td>
+       <td><%= g.host? %></td>
+       <td><a href={"/games/#{g.id}"}>Go</a></td>
+     </tr>
+   <% end %>
+ </tbody>
+</table>

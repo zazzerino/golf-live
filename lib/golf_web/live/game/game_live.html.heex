@@ -1,66 +1,60 @@
-<div>
-  <h2 class="title block">Game <%= @game_id %></h2>
+<h2 class="title block">Game <%= @game_id %></h2>
 
-  <svg class="game-svg block" viewBox={game_viewbox()}>
-    <defs>
-      <filter id="card-highlight">
-        <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="cyan" />
-      </filter>
-    </defs>
+<svg class="game-svg block" viewBox={game_viewbox()}>
+  <defs>
+    <filter id="card-highlight">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="cyan" />
+    </filter>
+  </defs>
 
-    <.deck :if={@game_status} game_status={@game_status} playable={@deck_playable?} />
+  <.deck :if={@game_status} game_status={@game_status} playable={@deck_playable?} />
 
-    <.table_cards first={@table_card_0} second={@table_card_1} playable={@table_playable?} />
+  <.table_cards first={@table_card_0} second={@table_card_1} playable={@table_playable?} />
 
-    <%= for p <- @players do %>
-      <.hand
-        cards={p.hand}
-        position={p.position}
-        player_id={p.id}
-        user_player_id={@player && @player.id}
-        playable_cards={@playable_cards}
-      />
+  <%= for p <- @players do %>
+    <.hand
+      cards={p.hand}
+      position={p.position}
+      player_id={p.id}
+      user_player_id={@player && @player.id}
+      playable_cards={@playable_cards}
+    />
 
-      <.held_card
-        :if={p.held_card}
-        name={p.held_card}
-        position={p.position}
-        playable={@held_playable?}
-      />
+    <.held_card
+      :if={p.held_card}
+      name={p.held_card}
+      position={p.position}
+      playable={@held_playable?}
+    />
 
-      <.player_info name={p.username} position={p.position} score={p.score} />
-    <% end %>
+    <.player_info name={p.username} position={p.position} score={p.score} />
+  <% end %>
 
-    <g :if={@game_status == :init} class="game-text">
-      <rect x="-200" y="-50" width="400" height="100" />
-      <text>
-        Waiting for host to start game...
-      </text>
-    </g>
+  <g :if={@game_status == :init} class="game-text">
+    <rect x="-200" y="-50" width="400" height="100" />
+    <text>Waiting for host to start game...</text>
+  </g>
 
-    <g :if={@game_status == :over} class="game-text">
-      <rect x="-100" y="-50" width="200" height="100" />
-      <text>
-        Game Over
-      </text>
-    </g>
-  </svg>
+  <g :if={@game_status == :over} class="game-text">
+    <rect x="-100" y="-50" width="200" height="100" />
+    <text>Game Over</text>
+  </g>
+</svg>
 
-  <div :if={@can_start_game? || @can_join_game?} class="game-controls block">
-    <button :if={@can_start_game?} class="button is-link" phx-click="start_game">
-      Start Game
-    </button>
+<div :if={@can_start_game? || @can_join_game?} class="game-controls block">
+  <button :if={@can_start_game?} class="button is-link" phx-click="start_game">
+    Start Game
+  </button>
 
-    <button :if={@can_join_game?} class="button is-link" phx-click="join_game">
-      Join Game
-    </button>
-  </div>
-
-  <.game_chat messages={@chat_messages} />
-
-  <.join_requests_table
-    requests={@join_requests}
-    game_status={@game_status}
-    host={@player && @player.host?}
-  />
+  <button :if={@can_join_game?} class="button is-link" phx-click="join_game">
+    Join Game
+  </button>
 </div>
+
+<.game_chat messages={@chat_messages} />
+
+<.join_requests_table
+  requests={@join_requests}
+  game_status={@game_status}
+  host={@player && @player.host?}
+/>

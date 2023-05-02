@@ -1,19 +1,17 @@
-<div>
-  <h2 class="title block">User Settings</h2>
+<h2 class="title block">User Settings</h2>
 
-  <p class="block">
-   <span class="has-text-weight-bold">User ID: </span><%= @user.id %>
-  </p>
+<p class="block">
+ <span class="has-text-weight-bold">User ID: </span><%= @user.id %>
+</p>
 
-  <.form class="block" for={%{}} action={~p"/update_username"}>
-    <div class="field">
-      <label class="label" for="username">Username</label>
-      <div class="control">
-        <input class="input" name="username" value={@user.username} required />
-      </div>
-    </div>
+<.form class="block" for={%{}} action={~p"/update_username"}>
+  <div class="field">
+    <label class="label" for="username">Username</label>
     <div class="control">
-      <button class="button is-link">Update</button>
+      <input class="input" name="username" value={@user.username} required />
     </div>
-  </.form>
-</div>
+  </div>
+  <div class="control">
+    <button class="button is-link">Update</button>
+  </div>
+</.form>

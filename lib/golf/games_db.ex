@@ -111,8 +111,14 @@ defmodule Golf.GamesDb do
       where: p.host?,
       join: g in Game,
       on: [id: p.game_id],
-      order_by: g.id,
-      select: g.id
+      where: g.status != :over,
+      order_by: g.inserted_at,
+      select: %{
+        id: g.id,
+        inserted_at: g.inserted_at,
+        status: g.status,
+        host?: p.host?
+      }
     )
     |> Repo.all()
   end

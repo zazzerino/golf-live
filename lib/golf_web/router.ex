@@ -23,6 +23,7 @@ defmodule GolfWeb.Router do
     get "/user/settings", PageController, :user_settings
     post "/update_username", PageController, :update_username
 
+    live "/games", GamesLive
     live "/games/:game_id", GameLive
     post "/games/create", GameController, :create_game
   end
