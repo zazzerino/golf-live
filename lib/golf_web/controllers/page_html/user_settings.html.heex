@@ -1,5 +1,9 @@
 <div>
-  <h2 class="title block">Settings</h2>
+  <h2 class="title block">User Settings</h2>
+
+  <p class="block">
+   <span class="has-text-weight-bold">User ID: </span><%= @user.id %>
+  </p>
 
   <.form class="block" for={%{}} action={~p"/update_username"}>
     <div class="field">

@@ -46,7 +46,7 @@ defmodule GolfWeb.GameComponents do
 
   def deck_class(playable?) do
     if playable? do
-      "deck highlight"
+      "deck playable"
     else
       "deck"
     end
@@ -71,7 +71,7 @@ defmodule GolfWeb.GameComponents do
 
   def table_card_class(playable?) do
     if playable? do
-      "table highlight"
+      "table playable"
     else
       "table"
     end
@@ -136,7 +136,7 @@ defmodule GolfWeb.GameComponents do
 
   def hand_card_class(player_id, user_player_id, playable_cards, index) do
     if player_id == user_player_id and hand_index_playable?(playable_cards, index) do
-      "highlight"
+      "playable"
     end
   end
 
@@ -168,7 +168,7 @@ defmodule GolfWeb.GameComponents do
 
   def held_card_class(position, playable?) do
     if playable? do
-      "held #{position} highlight"
+      "held #{position} playable"
     else
       "held #{position}"
     end

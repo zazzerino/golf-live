@@ -20,7 +20,7 @@ defmodule GolfWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    get "/settings", PageController, :settings
+    get "/user/settings", PageController, :user_settings
     post "/update_username", PageController, :update_username
 
     live "/games/:game_id", GameLive

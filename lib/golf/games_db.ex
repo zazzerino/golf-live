@@ -103,6 +103,20 @@ defmodule Golf.GamesDb do
     |> Repo.one()
   end
 
+  def get_user_games(user_id) do
+    from(u in User,
+      where: [id: ^user_id],
+      join: p in Player,
+      on: [user_id: u.id],
+      where: p.host?,
+      join: g in Game,
+      on: [id: p.game_id],
+      order_by: g.id,
+      select: g.id
+    )
+    |> Repo.all()
+  end
+
   # db updates
 
   def create_game(%User{} = user) do

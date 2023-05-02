@@ -44,9 +44,7 @@ defmodule GolfWeb.GameLive do
          |> redirect(to: ~p"/")}
 
       game ->
-        {:noreply,
-         socket
-         |> assign_game_data(game)}
+        {:noreply, assign_game_data(socket, game)}
     end
   end
 

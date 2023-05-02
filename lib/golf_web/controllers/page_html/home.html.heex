@@ -1,8 +1,6 @@
 <div>
   <h2 class="block title">Golf</h2>
 
-  <p class="block">User <%= @user.username %>(id=<%= @user.id %>)</p>
-
   <.form class="block" for={%{}} action={~p"/games/create"}>
     <button class="button is-link">Create Game</button>
   </.form>

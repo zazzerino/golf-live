@@ -84,6 +84,8 @@
   background-color: seagreen;
   width: var(--game-width);
   height: var(--game-height);
+  max-width: 600px;
+  max-height: 600px;
 }
 
 .game-text rect {
@@ -98,7 +100,7 @@
   font-weight: bold;
 }
 
-.card.highlight {
+.card.playable {
   filter: url("#card-highlight");
   cursor: pointer;
 }

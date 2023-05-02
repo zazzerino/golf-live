@@ -9,10 +9,10 @@ defmodule GolfWeb.PageController do
     render(conn, :home, page_title: "Home", user: user)
   end
 
-  def settings(conn, _) do
+  def user_settings(conn, _) do
     user_id = get_session(conn, "user_id")
     user = Users.get_user(user_id)
-    render(conn, :settings, page_title: "Settings", user: user)
+    render(conn, :user_settings, page_title: "User", user: user)
   end
 
   def update_username(conn, %{"username" => username}) do
